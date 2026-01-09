@@ -1,0 +1,7 @@
+{
+  "name": "Build me me",
+  "description": "A high-performance UI generation platform that turns text prompts into beautiful React + Tailwind CSS components using Gemini 3 Pro.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
