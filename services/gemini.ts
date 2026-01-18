@@ -40,6 +40,7 @@ SCHEMA:
 If the user provides an image, treat it as a reference for layout, style, or specific UI elements they want to replicate or iterate on.`;
 
 export async function generateComponent(prompt: string, history: any[] = [], imageBase64?: string) {
+  // Initialize AI inside the function to avoid top-level 'process' errors
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
   
   const contents = history.map(m => {

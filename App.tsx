@@ -1,10 +1,10 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
-import ChatSidebar from './components/ChatSidebar';
-import PreviewFrame from './components/PreviewFrame';
-import CodeEditor from './components/CodeEditor';
-import { Message, AppStatus, ViewMode, DeviceMode, GeneratedComponent, GithubConfig, Project } from './types';
-import { generateComponent, getSmartSuggestions } from './services/gemini';
+import ChatSidebar from './components/ChatSidebar.tsx';
+import PreviewFrame from './components/PreviewFrame.tsx';
+import CodeEditor from './components/CodeEditor.tsx';
+import { Message, AppStatus, ViewMode, DeviceMode, GeneratedComponent, GithubConfig, Project } from './types.ts';
+import { generateComponent, getSmartSuggestions } from './services/gemini.ts';
 
 const App: React.FC = () => {
   const [projects, setProjects] = useState<Project[]>(() => {
