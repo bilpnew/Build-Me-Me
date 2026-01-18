@@ -1,15 +1,11 @@
 
 import React, { useState, useEffect, useRef } from 'react';
-import * as prettier from "https://esm.sh/prettier@3.3.3/standalone";
-import * as babel from "https://esm.sh/prettier@3.3.3/plugins/babel";
-import * as estree from "https://esm.sh/prettier@3.3.3/plugins/estree";
-import Prism from 'prismjs';
+import * as prettier from "https://esm.sh/prettier@3.5.1/standalone";
+import * as babel from "https://esm.sh/prettier@3.5.1/plugins/babel";
+import * as estree from "https://esm.sh/prettier@3.5.1/plugins/estree";
 
-// Import Prism languages dynamically
-import 'https://esm.sh/prismjs@1.29.0/components/prism-javascript';
-import 'https://esm.sh/prismjs@1.29.0/components/prism-typescript';
-import 'https://esm.sh/prismjs@1.29.0/components/prism-jsx';
-import 'https://esm.sh/prismjs@1.29.0/components/prism-tsx';
+// Prism is loaded via global script tag in index.html to avoid ESM plugin resolution issues
+declare const Prism: any;
 
 interface CodeEditorProps {
   code: string;
@@ -47,7 +43,7 @@ const CodeEditor: React.FC<CodeEditorProps> = ({ code }) => {
   }, [code]);
 
   useEffect(() => {
-    if (codeRef.current) {
+    if (codeRef.current && typeof Prism !== 'undefined') {
       Prism.highlightElement(codeRef.current);
     }
   }, [formattedCode]);
