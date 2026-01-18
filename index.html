@@ -65,14 +65,23 @@
     </style>
     <script>
       // Prevent ReferenceErrors for 'process' in browser environments
-      window.process = window.process || { env: { API_KEY: '' } };
+      window.process = { 
+        env: { 
+          API_KEY: '',
+          NODE_ENV: 'production' 
+        } 
+      };
       
       // Global error listener to debug black screen issues
       window.onerror = function(message, source, lineno, colno, error) {
         console.error("Global Error Caught:", message, "at", source, lineno + ":" + colno);
         const root = document.getElementById('root');
         if (root && root.innerHTML === '') {
-          root.innerHTML = '<div style="padding: 20px; color: red; font-family: sans-serif;"><h2>Application Load Error</h2><p>' + message + '</p></div>';
+          root.innerHTML = '<div style="padding: 40px; color: #ef4444; font-family: sans-serif; text-align: center;">' +
+            '<h2 style="font-size: 1.5rem; font-weight: bold; margin-bottom: 1rem;">Application Load Error</h2>' +
+            '<p style="font-size: 0.875rem; color: #71717a;">' + message + '</p>' +
+            '<button onclick="location.reload()" style="margin-top: 2rem; padding: 0.5rem 1rem; background: #18181b; color: white; border-radius: 0.5rem; border: none; cursor: pointer;">Reload Application</button>' +
+            '</div>';
         }
       };
     </script>
@@ -91,5 +100,7 @@
 </head>
 <body class="bg-zinc-50 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100">
     <div id="root"></div>
+    <!-- Load the main React entry point -->
+    <script type="module" src="./index.tsx"></script>
 </body>
 </html>
