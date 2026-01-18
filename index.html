@@ -63,6 +63,19 @@
             padding: 0 !important;
         }
     </style>
+    <script>
+      // Prevent ReferenceErrors for 'process' in browser environments
+      window.process = window.process || { env: { API_KEY: '' } };
+      
+      // Global error listener to debug black screen issues
+      window.onerror = function(message, source, lineno, colno, error) {
+        console.error("Global Error Caught:", message, "at", source, lineno + ":" + colno);
+        const root = document.getElementById('root');
+        if (root && root.innerHTML === '') {
+          root.innerHTML = '<div style="padding: 20px; color: red; font-family: sans-serif;"><h2>Application Load Error</h2><p>' + message + '</p></div>';
+        }
+      };
+    </script>
 <script type="importmap">
 {
   "imports": {
@@ -78,7 +91,5 @@
 </head>
 <body class="bg-zinc-50 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-100">
     <div id="root"></div>
-    <!-- Explicit entry point for the React application -->
-    <script type="module" src="./index.tsx"></script>
 </body>
 </html>

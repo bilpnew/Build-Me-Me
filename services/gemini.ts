@@ -39,9 +39,17 @@ SCHEMA:
 
 If the user provides an image, treat it as a reference for layout, style, or specific UI elements they want to replicate or iterate on.`;
 
+const getApiKey = () => {
+  try {
+    return (typeof process !== 'undefined' && process.env && process.env.API_KEY) ? process.env.API_KEY : '';
+  } catch (e) {
+    return '';
+  }
+};
+
 export async function generateComponent(prompt: string, history: any[] = [], imageBase64?: string) {
-  // Initialize AI inside the function to avoid top-level 'process' errors
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
+  const apiKey = getApiKey();
+  const ai = new GoogleGenAI({ apiKey: apiKey });
   
   const contents = history.map(m => {
     const parts: any[] = [{ text: m.content }];
@@ -103,7 +111,8 @@ export async function generateComponent(prompt: string, history: any[] = [], ima
 }
 
 export async function getSmartSuggestions(description: string, code: string) {
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
+  const apiKey = getApiKey();
+  const ai = new GoogleGenAI({ apiKey: apiKey });
   
   const prompt = `Based on this component description: "${description}" and its code, suggest 3 concise, high-impact next steps or improvements a user might want to make. Each suggestion should be a short phrase (max 6 words). 
   
@@ -140,7 +149,8 @@ export async function getSmartSuggestions(description: string, code: string) {
  * Tool for generating specific visual assets for the UI
  */
 export async function generateAsset(prompt: string) {
-  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
+  const apiKey = getApiKey();
+  const ai = new GoogleGenAI({ apiKey: apiKey });
   try {
     const response = await ai.models.generateContent({
       model: 'gemini-2.5-flash-image',
