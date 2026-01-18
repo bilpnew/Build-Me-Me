@@ -40,8 +40,8 @@ const PreviewFrame: React.FC<PreviewFrameProps> = ({ code, deviceMode }) => {
         <head>
           <meta charset="utf-8">
           <script src="https://cdn.tailwindcss.com"></script>
-          <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
-          <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+          <script crossorigin src="https://unpkg.com/react@19/umd/react.development.js"></script>
+          <script crossorigin src="https://unpkg.com/react-dom@19/umd/react-dom.development.js"></script>
           <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
           <script src="https://unpkg.com/lucide@latest"></script>
           <script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js"></script>
@@ -62,7 +62,6 @@ const PreviewFrame: React.FC<PreviewFrameProps> = ({ code, deviceMode }) => {
               <div id="error-display">
                 <h2 style="margin-top: 0; font-size: 1.2rem;">Runtime Error</h2>
                 <pre style="white-space: pre-wrap; font-size: 0.85rem;">{error.message}</pre>
-                <div style="font-size: 0.75rem; color: #991b1b; margin-top: 10px;">Check the component logic for syntax errors or undefined variables.</div>
               </div>
             );
 
@@ -75,35 +74,34 @@ const PreviewFrame: React.FC<PreviewFrameProps> = ({ code, deviceMode }) => {
               if (typeof Component !== 'undefined') {
                 root.render(<Component />);
               } else {
+                // Fallback: search for the last defined function if 'Component' is missing
                 const keys = Object.keys(window);
-                const lastDefined = window[keys[keys.length - 1]];
-                if (typeof lastDefined === 'function') {
-                  root.render(React.createElement(lastDefined));
-                } else {
-                  throw new Error("No 'Component' function found in generated code.");
+                let found = false;
+                for (let i = keys.length - 1; i >= 0; i--) {
+                  const val = window[keys[i]];
+                  if (typeof val === 'function' && val.name && val.name !== 'Component') {
+                    root.render(React.createElement(val));
+                    found = true;
+                    break;
+                  }
                 }
+                if (!found) throw new Error("No React component found in generated code.");
               }
 
               if (window.lucide) {
                 window.lucide.createIcons();
               }
 
-              // Handle screenshot capture
               window.addEventListener('message', async (e) => {
                 if (e.data.type === 'CAPTURE_SCREENSHOT') {
                   const node = document.getElementById('preview-root');
                   if (!node) return;
-                  
                   try {
-                    let dataUrl;
-                    if (e.data.format === 'png') {
-                      dataUrl = await htmlToImage.toPng(node);
-                    } else {
-                      dataUrl = await htmlToImage.toJpeg(node, { quality: 0.95 });
-                    }
-                    
+                    const dataUrl = e.data.format === 'png' 
+                      ? await htmlToImage.toPng(node) 
+                      : await htmlToImage.toJpeg(node, { quality: 0.95 });
                     const link = document.createElement('a');
-                    link.download = \`v0-component.\${e.data.format}\`;
+                    link.download = \`build-me-me-export.\${e.data.format}\`;
                     link.href = dataUrl;
                     link.click();
                   } catch (err) {
